@@ -1,5 +1,5 @@
 [project]
-name = "vortezwohl-sdk"
+name = "vortezwohl"
 version = "0.0.1"
 description = "SDK of vortezwohl."
 readme = "README.md"

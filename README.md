@@ -4,9 +4,23 @@
 
 ## Installation
 
-```
-pip install -U git+https://github.com/vortezwohl/vortezwohl-sdk.git
-```
+- With pip
+
+    ```
+    pip install -U vortezwohl
+    ```
+
+- With uv
+
+    ```
+    uv add -U vortezwohl
+    ```
+
+- From github
+
+    ```
+    pip install -U git+https://github.com/vortezwohl/vortezwohl-sdk.git
+    ```
 
 ## Quick Start
 
