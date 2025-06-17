@@ -1,0 +1,10 @@
+[project]
+name = "vortezwohl-sdk"
+version = "0.0.1"
+description = "SDK of vortezwohl."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "psutil",
+    "typing-extensions",
+]
