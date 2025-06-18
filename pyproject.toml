@@ -5,6 +5,7 @@ description = "SDK of vortezwohl."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "overrides",
     "psutil",
     "typing-extensions",
 ]
