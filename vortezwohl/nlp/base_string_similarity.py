@@ -4,7 +4,8 @@ from typing_extensions import Callable
 
 
 class BaseStringSimilarity(Callable):
-    def __init__(self, *args, **kwargs): ...
+    def __init__(self, ignore_case: bool, *args, **kwargs):
+        self._ignore_case = ignore_case
 
     @abstractmethod
     def __call__(self, *args, **kwargs): ...

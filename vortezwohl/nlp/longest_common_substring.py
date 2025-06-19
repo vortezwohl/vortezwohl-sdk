@@ -4,11 +4,13 @@ from vortezwohl.nlp.base_string_similarity import BaseStringSimilarity
 
 
 class LongestCommonSubstring(BaseStringSimilarity):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, ignore_case: bool = False):
+        super().__init__(ignore_case=ignore_case)
 
     @override
     def __call__(self, s_1: str, s_2: str) -> str:
+        if self._ignore_case:
+            s_1, s_2 = s_1.lower(), s_2.lower()
         m, n = len(s_1), len(s_2)
         dp = [[0] * (n + 1) for _ in range(m + 1)]
         max_length = end_index = 0
