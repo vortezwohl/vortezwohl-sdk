@@ -54,9 +54,9 @@ class ThreadPool(object):
             except Exception as __e:
                 yield __e, traceback.format_exc()
 
-    def map(self, jobs: Iterable[Callable], arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) \
+    def map(self, job: Callable, arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) \
             -> tuple[Callable, Any, Any] | Exception:
-        return self.gather(jobs=jobs, arguments=arguments)
+        return self.gather(jobs=[job] * len(arguments), arguments=arguments)
 
     def shutdown(self, cancel_futures: bool = True):
         self._thread_pool_executor.shutdown(wait=True, cancel_futures=cancel_futures)
