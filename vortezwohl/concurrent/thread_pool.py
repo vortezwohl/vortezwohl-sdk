@@ -2,13 +2,14 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, Future, as_completed
 from threading import Lock
 from types import NoneType
-
-from typing_extensions import Iterable, Any, Callable, Dict, Tuple
+from typing_extensions import Iterable, Callable, Dict, Tuple
 
 import psutil
 
+from vortezwohl.concurrent.future_result import FutureResult
 
-class ThreadPool(object):
+
+class ThreadPool:
     def __init__(self, max_workers: int | None = None):
         if max_workers is None:
             max_workers = psutil.cpu_count(logical=True) + 1
@@ -35,8 +36,7 @@ class ThreadPool(object):
             self._futures.append(_future)
         return _future
 
-    def gather(self, jobs: Iterable[Callable], arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) \
-            -> tuple[Callable, Any, Any] | Exception:
+    def gather(self, jobs: Iterable[Callable], arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) -> Iterable[FutureResult]:
         futures = []
         for i, job in enumerate(jobs):
             if arguments is None or arguments[i] is None:
@@ -50,12 +50,14 @@ class ThreadPool(object):
                 futures.append(self._thread_pool_executor.submit(lambda param: (job, param, job(param)), arguments[i]))
         for future in as_completed(futures):
             try:
-                yield future.result()
+                res = future.result()
+                yield FutureResult(_callable=res[0], arguments=res[1], returns=res[2],
+                                   error=None, traceback=None)
             except Exception as __e:
-                yield __e, traceback.format_exc()
+                yield FutureResult(_callable=None, arguments=None, returns=None,
+                                   error=__e, traceback=traceback.format_exc())
 
-    def map(self, job: Callable, arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) \
-            -> tuple[Callable, Any, Any] | Exception:
+    def map(self, job: Callable, arguments: list[Dict] | list[Tuple] | list[NoneType] | None = None) -> Iterable[FutureResult]:
         return self.gather(jobs=[job] * len(arguments), arguments=arguments)
 
     def shutdown(self, cancel_futures: bool = True):
@@ -63,10 +65,15 @@ class ThreadPool(object):
         return self
 
     @property
-    def next_result(self) -> Any:
+    def next_result(self) -> Iterable[FutureResult]:
         for f in as_completed(self._futures):
             try:
-                yield f.result()
+                res = f.result()
+                yield FutureResult(_callable=res[0], arguments=res[1], returns=res[2],
+                                   error=None, traceback=None)
+            except Exception as __e:
+                yield FutureResult(_callable=None, arguments=None, returns=None,
+                                   error=__e, traceback=traceback.format_exc())
             finally:
                 with self._futures_lock:
                     self._futures.remove(f)
