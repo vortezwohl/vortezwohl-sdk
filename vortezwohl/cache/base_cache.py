@@ -48,27 +48,36 @@ class BaseCache:
         return self.delete(key=key)
 
     def __str__(self) -> str:
-        _max_len = 8
-        for key, value in self._cache.items():
-            _max_len = max(_max_len, len(str(key)))
-            _max_len = max(_max_len, len(str(value)))
-        _padding = 2
-        _max_len += _padding
-        line_spliter = f'\n{"+" + "=" * (_max_len * 2 + 1) + "+"}\n'
-        header = f'{self.__class__.__name__}(capacity={len(self._cache.keys())})'
-        return (f'{header:^{_max_len * 2 + 2}}{line_spliter}'
-                + f'|{"Key":^{_max_len}}|{"Value":^{_max_len}}|{line_spliter}'
-                + line_spliter.join([f'|{str(k):^{_max_len}}|{str(v):^{_max_len}}|' for k, v in self._cache.items()])
-                + (line_spliter if len(self) else ''))
+        stringify = ''
+        with self._cache_lock:
+            _max_len = 8
+            for key, value in self._cache.items():
+                _max_len = max(_max_len, len(str(key)))
+                _max_len = max(_max_len, len(str(value)))
+            _padding = 2
+            _max_len += _padding
+            line_spliter = f'\n{"+" + "=" * (_max_len * 2 + 1) + "+"}\n'
+            header = f'{self.__class__.__name__}(capacity={len(self._cache.keys())})'
+            stringify = (f'{header:^{_max_len * 2 + 2}}{line_spliter}'
+                         + f'|{"Key":^{_max_len}}|{"Value":^{_max_len}}|{line_spliter}'
+                         + line_spliter.join([f'|{str(k):^{_max_len}}|{str(v):^{_max_len}}|' for k, v in self._cache.items()])
+                         + (line_spliter if len(self) else ''))
+        return stringify
 
     def __repr__(self) -> str:
         return self.__str__()
 
     def __len__(self) -> int:
-        return len(self._cache.keys())
+        length = 0
+        with self._cache_lock:
+            length = len(self._cache.keys())
+        return length
 
     def __eq__(self, other) -> bool:
-        return str(self) == str(other)
+        stringify = ''
+        with self._cache_lock:
+            stringify = str(self)
+        return stringify == str(other)
 
     def __call__(self, key: Any) -> Any:
         return self.read(key=key)
