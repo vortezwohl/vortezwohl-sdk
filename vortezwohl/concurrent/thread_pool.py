@@ -64,6 +64,12 @@ class ThreadPool:
         self._thread_pool_executor.shutdown(wait=True, cancel_futures=cancel_futures)
         return self
 
+    def wait_all(self) -> list[FutureResult]:
+        _res = []
+        for _ in self.next_result:
+            _res.append(_)
+        return _res
+
     @property
     def next_result(self) -> Iterable[FutureResult]:
         for f in as_completed(self._futures):
