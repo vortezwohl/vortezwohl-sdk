@@ -21,7 +21,7 @@ def write_file(content: str | bytes, path: str, encoding: str = 'utf-8') -> str:
         return path
     with open(path, mode='w', encoding=encoding) as f:
         f.write(content)
-    return path
+    return os.path.abspath(path)
 
 
 def get_files(path: str) -> list:
