@@ -10,7 +10,8 @@ def read_file(path: str, encoding: str = 'utf-8') -> str:
             with open(path, mode='r', encoding='gbk') as f:
                 return f.read()
         except UnicodeDecodeError:
-            pass
+            with open(path, mode='r', encoding=encoding, errors='replace') as f:
+                return f.read()
 
 
 def write_file(content: str | bytes, path: str, encoding: str = 'utf-8') -> str:
