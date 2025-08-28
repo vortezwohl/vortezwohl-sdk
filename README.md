@@ -52,6 +52,16 @@
 
     - LongestCommonSubstring
 
+- **crypt**:
+
+    - md5
+
+    - sha1
+
+    - sha256
+
+    - sha512
+
 - **random**:
 
     - next_seed
