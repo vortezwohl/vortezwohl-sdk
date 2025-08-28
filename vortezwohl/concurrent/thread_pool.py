@@ -1,6 +1,6 @@
 import traceback
 from concurrent.futures import ThreadPoolExecutor, Future, as_completed
-from threading import Lock
+from threading import RLock
 from types import NoneType
 from typing_extensions import Iterable, Callable, Dict, Tuple
 
@@ -16,7 +16,7 @@ class ThreadPool:
         self._max_workers = max_workers
         self._thread_pool_executor = ThreadPoolExecutor(max_workers=self._max_workers)
         self._futures = list()
-        self._futures_lock = Lock()
+        self._futures_lock = RLock()
 
     def __enter__(self):
         return self
