@@ -16,6 +16,6 @@ def timeout(_timeout: float):
             thread.join(timeout=_timeout)
             if thread.is_alive():
                 raise TimeoutError(f'{func} timed out after {_timeout} seconds.')
-            return result[0]
+            return result[0] if len(result) > 0 else None
         return wrapper
     return decorator
