@@ -7,8 +7,8 @@ def lock_on(lock: Union[threading.Lock, threading.RLock, threading.Semaphore], *
         def wrapper(*_args, **_kwargs):
             if 'blocking' not in kwargs or kwargs.get('timeout', None) is not None:
                 kwargs['blocking'] = True
-            lock.acquire(**kwargs)
             try:
+                lock.acquire(**kwargs)
                 return func(*_args, **_kwargs)
             finally:
                 if isinstance(lock, threading.Semaphore):
