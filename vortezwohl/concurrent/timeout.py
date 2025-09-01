@@ -1,9 +1,10 @@
 import threading
+from typing import Any
 
 from typing_extensions import Callable
 
 
-def timeout(_timeout: float):
+def timeout(_timeout: float, _default: Any = None):
     def decorator(func: Callable):
         def wrapper(*_args, **_kwargs):
             result = []
@@ -19,7 +20,10 @@ def timeout(_timeout: float):
             thread.start()
             thread.join(timeout=_timeout)
             if thread.is_alive():
-                raise TimeoutError(f'{func} timed out after {_timeout} seconds.')
+                if _default is None:
+                    raise TimeoutError(f'{func} timed out after {_timeout} seconds.')
+                else:
+                    return _default
             if len(err) > 0:
                 raise err[0]
             return result[0] if len(result) > 0 else None
