@@ -83,7 +83,9 @@ class System:
     def uninstall_package(self, package: str) -> str | bool:
         try:
             version = self.package_version(package)
-            self.shell(f'{self._pip} uninstall {package}', force_check=True)
+            subprocess.run(f'{self._pip} uninstall {package}', cwd=self._workdir,
+                           shell=True, capture_output=True, text=True,
+                           timeout=None, check=True, input='Y')
             return f'{package}=={version}'
         except subprocess.CalledProcessError:
             return False
