@@ -1,7 +1,7 @@
 from typing_extensions import Iterable, Any
 
 
-def batch_iter(_iterable: Iterable, batch_size: int = 1, fill_value: Any = None) -> list:
+def batched(_iterable: Iterable, batch_size: int = 1, fill_value: Any = None) -> list:
     step = 0
     tmp_iter = []
     for item in _iterable:
@@ -16,7 +16,7 @@ def batch_iter(_iterable: Iterable, batch_size: int = 1, fill_value: Any = None)
         yield tmp_iter
 
 
-def sliding_window_iter(_iterable: Iterable, window_size: int, stride: int, fill_value: Any = None) -> Iterable:
+def sliding_window(_iterable: Iterable, window_size: int, stride: int, fill_value: Any = None) -> Iterable:
     _list_iterable = list(_iterable)
     outer_step = 0
     for _ in _list_iterable:
