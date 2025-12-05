@@ -1,11 +1,13 @@
 [project]
 name = "vortezwohl"
-version = "0.0.17"
+version = "0.0.18"
 description = "Practical SDKs by vortezwohl."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "overrides",
     "psutil",
+    "requests",
     "typing-extensions",
+    "urllib3>=2.5.0",
 ]
