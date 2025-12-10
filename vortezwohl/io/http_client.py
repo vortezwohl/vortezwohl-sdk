@@ -3,6 +3,8 @@ import random
 import time
 import requests
 
+from vortezwohl import NEW_LINE, BLANK, UTF_8
+
 logger = logging.getLogger('vortezwohl.io')
 
 
@@ -25,7 +27,11 @@ class HttpClient:
         for _ in range(self._max_retries + 1):
             if r is not None:
                 retry_count += 1
-                logger.warning(f'Failed to request {url} ({r.status_code}), retrying {retry_count}/{self._max_retries}')
+                _content = r.content.replace(NEW_LINE.encode(UTF_8), BLANK.encode(UTF_8)).strip().decode(UTF_8)
+                logger.warning(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
+                               + (f' : {_content}' if len(_content) > 0 else ''))
+                if retry_count >= self._max_retries:
+                    return r
                 self.sleep(_, base=self._delay_base)
             r = requests.get(url=url, params=data, headers=headers, timeout=self._timeout)
             if r.status_code == 200:
@@ -38,7 +44,11 @@ class HttpClient:
         for _ in range(self._max_retries + 1):
             if r is not None:
                 retry_count += 1
-                logger.warning(f'Failed to request {url} ({r.status_code}), retrying {retry_count}/{self._max_retries}')
+                _content = r.content.replace(NEW_LINE.encode(UTF_8), BLANK.encode(UTF_8)).strip().decode(UTF_8)
+                logger.warning(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
+                               + (f' : {_content}' if len(_content) > 0 else ''))
+                if retry_count >= self._max_retries:
+                    return r
                 self.sleep(_, base=self._delay_base)
             r = requests.post(url=url, json=data, headers=headers, timeout=self._timeout)
             if r.status_code == 200:
