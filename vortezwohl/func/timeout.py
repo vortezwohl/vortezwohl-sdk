@@ -1,7 +1,5 @@
 import threading
-from typing import Any
-
-from typing_extensions import Callable
+from typing_extensions import Callable, Any
 
 
 def timeout(_timeout: float, _default: Any = None):

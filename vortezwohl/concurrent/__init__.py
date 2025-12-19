@@ -1,3 +1,3 @@
 from .thread_pool import ThreadPool
 from .lock import lock_on
-from .timeout import timeout
+from vortezwohl.func.timeout import timeout
