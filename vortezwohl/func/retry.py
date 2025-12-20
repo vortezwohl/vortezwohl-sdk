@@ -19,6 +19,9 @@ def sleep(retries: int, base: float = 2., max_delay: float = 600.):
 class MaxRetriesReachedError(RuntimeError):
     def __init__(self, retries: int, message: str):
         super().__init__(f'Max attempts reached: {retries + 1}\n{message}')
+        self.retries = retries
+        self.attempts = retries + 1
+        self.message = message
 
 
 class Retry:
@@ -26,7 +29,7 @@ class Retry:
         self._max_retries = max_retries
         self._delay = delay
 
-    def on_return(self, validator: Callable[Any, bool]):
+    def on_return(self, validator: Callable[[Any], bool]):
         def decorator(func: Callable):
             def wrapper(*_args, **_kwargs):
                 result = func(*_args, **_kwargs)
@@ -79,13 +82,17 @@ class Retry:
                     try:
                         result = func(*_args, **_kwargs)
                     except Exception as e:
+                        reraise = True
                         for exception in exceptions:
                             if isinstance(e, exception):
+                                reraise = False
                                 need_retry = True
                                 error = e
                                 error_type = e.__class__.__name__
                                 error_super_type = exception.__name__
                                 break
+                        if reraise:
+                            raise e
                     return (error, error_type, error_super_type), need_retry, result
                 (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                 if not _need_retry:
