@@ -12,8 +12,8 @@ def _sleep(retries: int, base: float = 2., max_delay: float = 600.):
 
 
 class MaxRetriesReachedError(RuntimeError):
-    def __init__(self, retries: int):
-        super().__init__(f'Max retries reached: {retries}.')
+    def __init__(self, retries: int, message: str):
+        super().__init__(f'Max attempts reached: {retries + 1}\n{message}')
 
 
 class Retry:
@@ -53,7 +53,7 @@ class Retry:
                                 logger.debug(f'Validation failed.\n'
                                              f'- Retry {retry_count + 1}/{self._max_retries}'
                                              f' : {str(result).replace(NEW_LINE, BLANK)}')
-                        raise MaxRetriesReachedError(retries=self._max_retries)
+                        raise MaxRetriesReachedError(retries=self._max_retries, message='Validation failed.')
             return wrapper
         return decorator
 
@@ -109,6 +109,9 @@ class Retry:
                                 logger.debug(f'Validation failed, {_error_type}({_error_super_type}) occurred: {str(_error)}.\n' 
                                              f'- Retry {retry_count + 1}/{self._max_retries} '
                                              f': {str(_result).replace(NEW_LINE, BLANK)}')
-                        raise MaxRetriesReachedError(retries=self._max_retries)
+                        raise MaxRetriesReachedError(retries=self._max_retries,
+                                                     message=f'{_error_type}({_error_super_type}) '
+                                                             f'occurred: {str(_error)} '
+                                                             f': {str(_result).replace(NEW_LINE, BLANK)}')
             return wrapper
         return decorator
