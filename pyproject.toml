@@ -1,6 +1,6 @@
 [project]
 name = "vortezwohl"
-version = "0.0.22"
+version = "0.1.0"
 description = "Practical SDKs by vortezwohl."
 readme = "README.md"
 requires-python = ">=3.10"
