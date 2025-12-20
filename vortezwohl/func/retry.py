@@ -21,7 +21,7 @@ class Retry:
         self._max_retries = max_retries
         self._delay = delay
 
-    def on_return(self, validator: Callable[Any, bool], ):
+    def on_return(self, validator: Callable[Any, bool]):
         def decorator(func: Callable):
             def wrapper(*_args, **_kwargs):
                 result = func(*_args, **_kwargs)
@@ -53,7 +53,9 @@ class Retry:
                                 logger.debug(f'Validation failed.\n'
                                              f'- Retry {retry_count + 1}/{self._max_retries}'
                                              f' : {str(result).replace(NEW_LINE, BLANK)}')
-                        raise MaxRetriesReachedError(retries=self._max_retries, message='Validation failed.')
+                        raise MaxRetriesReachedError(retries=self._max_retries,
+                                                     message='Validation failed.\n'
+                                                             f'Returns: {result}')
             return wrapper
         return decorator
 
@@ -111,7 +113,7 @@ class Retry:
                                              f': {str(_result).replace(NEW_LINE, BLANK)}')
                         raise MaxRetriesReachedError(retries=self._max_retries,
                                                      message=f'{_error_type}({_error_super_type}) '
-                                                             f'occurred: {str(_error)} '
-                                                             f': {str(_result).replace(NEW_LINE, BLANK)}')
+                                                             f'occurred: {str(_error)}\n'
+                                                             f'Returns: {_result}')
             return wrapper
         return decorator
