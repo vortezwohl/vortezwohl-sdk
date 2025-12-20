@@ -1,6 +1,10 @@
+import logging
 from typing_extensions import Callable, Any
 
+from vortezwohl import NEW_LINE, BLANK
 from vortezwohl.io.http_client import HttpClient
+
+logger = logging.getLogger('vortezwohl.retry')
 
 
 def _sleep(retries: int, base: float = 2., max_delay: float = 600.):
@@ -24,6 +28,8 @@ class Retry:
                 if validator(result):
                     return result
                 else:
+                    logger.debug('Validation failed.\n'
+                                 '- Retrying...')
                     if self._max_retries is None:
                         retry_count = 0
                         while True:
@@ -32,6 +38,10 @@ class Retry:
                             result = func(*_args, **_kwargs)
                             if validator(result):
                                 return result
+                            else:
+                                logger.debug('Validation failed.\n'
+                                             f'- Retry {retry_count + 1}/inf'
+                                             f' : {str(result).replace(NEW_LINE, BLANK)}')
                     else:
                         for retry_count in range(self._max_retries):
                             if self._delay:
@@ -39,6 +49,10 @@ class Retry:
                             result = func(*_args, **_kwargs)
                             if validator(result):
                                 return result
+                            else:
+                                logger.debug(f'Validation failed.\n'
+                                             f'- Retry {retry_count + 1}/{self._max_retries}'
+                                             f' : {str(result).replace(NEW_LINE, BLANK)}')
                         raise MaxRetriesReachedError(retries=self._max_retries)
             return wrapper
         return decorator
@@ -49,36 +63,52 @@ class Retry:
 
         def decorator(func: Callable):
             def wrapper(*_args, **_kwargs):
-                def validator() -> tuple[bool, Any]:
+                def validator() -> tuple[tuple, bool, Any]:
                     result = None
                     need_retry = False
+                    error_type = None
+                    error_super_type = None
+                    error = None
                     try:
                         result = func(*_args, **_kwargs)
                     except Exception as e:
                         for exception in exceptions:
                             if isinstance(e, exception):
                                 need_retry = True
+                                error = e
+                                error_type = e.__class__.__name__
+                                error_super_type = exception.__name__
                                 break
-                    return need_retry, result
-                _need_retry, _result = validator()
+                    return (error, error_type, error_super_type), need_retry, result
+                (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                 if not _need_retry:
                     return _result
                 else:
+                    logger.debug(f'Validation failed, {_error_type}({_error_super_type}) occurred: {str(_error)}.\n'
+                                 '- Retrying...')
                     if self._max_retries is None:
                         retry_count = 0
                         while True:
                             if self._delay:
                                 _sleep(retries=retry_count)
-                            _need_retry, _result = validator()
+                            (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                             if not _need_retry:
                                 return _result
+                            else:
+                                logger.debug(f'Validation failed, {_error_type}({_error_super_type}) occurred: {str(_error)}.\n'
+                                             f'- Retry {retry_count + 1}/inf '
+                                             f': {str(_result).replace(NEW_LINE, BLANK)}')
                     else:
                         for retry_count in range(self._max_retries):
                             if self._delay:
                                 _sleep(retries=retry_count)
-                            _need_retry, _result = validator()
+                            (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                             if not _need_retry:
                                 return _result
+                            else:
+                                logger.debug(f'Validation failed, {_error_type}({_error_super_type}) occurred: {str(_error)}.\n' 
+                                             f'- Retry {retry_count + 1}/{self._max_retries} '
+                                             f': {str(_result).replace(NEW_LINE, BLANK)}')
                         raise MaxRetriesReachedError(retries=self._max_retries)
             return wrapper
         return decorator

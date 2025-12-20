@@ -28,8 +28,8 @@ class HttpClient:
             if r is not None:
                 retry_count += 1
                 _content = r.content.replace(NEW_LINE.encode(UTF_8), BLANK.encode(UTF_8)).strip().decode(UTF_8)
-                logger.warning(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
-                               + (f' : {_content}' if len(_content) > 0 else ''))
+                logger.debug(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
+                             + (f' : {_content}' if len(_content) > 0 else ''))
                 if retry_count >= self._max_retries:
                     return r
                 self.sleep(_, base=self._delay_base, **kwargs)
@@ -45,8 +45,8 @@ class HttpClient:
             if r is not None:
                 retry_count += 1
                 _content = r.content.replace(NEW_LINE.encode(UTF_8), BLANK.encode(UTF_8)).strip().decode(UTF_8)
-                logger.warning(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
-                               + (f' : {_content}' if len(_content) > 0 else ''))
+                logger.debug(f'({r.status_code}) {url} Retry {retry_count}/{self._max_retries}'
+                             + (f' : {_content}' if len(_content) > 0 else ''))
                 if retry_count >= self._max_retries:
                     return r
                 self.sleep(_, base=self._delay_base, **kwargs)

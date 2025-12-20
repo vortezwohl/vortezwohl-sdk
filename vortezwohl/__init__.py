@@ -17,3 +17,5 @@ logger.addHandler(console_handler)
 
 logger = logging.getLogger('vortezwohl.io')
 logger.setLevel(logging.INFO)
+logger = logging.getLogger('vortezwohl.retry')
+logger.setLevel(logging.INFO)
