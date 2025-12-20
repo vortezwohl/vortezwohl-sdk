@@ -1,9 +1,8 @@
 import logging
-import random
-import time
 import requests
 
 from vortezwohl import NEW_LINE, BLANK, UTF_8
+from vortezwohl.func.retry import sleep
 
 logger = logging.getLogger('vortezwohl.io')
 
@@ -16,10 +15,7 @@ class HttpClient:
 
     @staticmethod
     def sleep(retries: int, base: float = 2., max_delay: float = 600.):
-        retries = max(retries, 1)
-        delay = min(base ** retries, max_delay)
-        time.sleep(delay + random.uniform(.1, delay))
-        return
+        return sleep(retries=retries, base=base, max_delay=max_delay)
 
     def get(self, url: str, data: dict | None = None, headers: dict | None = None, **kwargs):
         r = None

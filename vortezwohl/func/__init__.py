@@ -1,2 +1,2 @@
 from .timeout import timeout
-from .retry import Retry
+from .retry import Retry, sleep

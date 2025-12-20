@@ -1,14 +1,19 @@
 import logging
+import random
+import time
+
 from typing_extensions import Callable, Any
 
 from vortezwohl import NEW_LINE, BLANK
-from vortezwohl.io.http_client import HttpClient
 
 logger = logging.getLogger('vortezwohl.retry')
 
 
-def _sleep(retries: int, base: float = 2., max_delay: float = 600.):
-    return HttpClient.sleep(retries=retries, base=base, max_delay=max_delay)
+def sleep(retries: int, base: float = 2., max_delay: float = 600.):
+    retries = max(retries, 1)
+    delay = min(base ** retries, max_delay)
+    time.sleep(delay + random.uniform(.1, delay))
+    return
 
 
 class MaxRetriesReachedError(RuntimeError):
@@ -34,7 +39,7 @@ class Retry:
                         retry_count = 0
                         while True:
                             if self._delay:
-                                _sleep(retries=retry_count)
+                                sleep(retries=retry_count)
                             result = func(*_args, **_kwargs)
                             if validator(result):
                                 return result
@@ -45,7 +50,7 @@ class Retry:
                     else:
                         for retry_count in range(self._max_retries):
                             if self._delay:
-                                _sleep(retries=retry_count)
+                                sleep(retries=retry_count)
                             result = func(*_args, **_kwargs)
                             if validator(result):
                                 return result
@@ -92,7 +97,7 @@ class Retry:
                         retry_count = 0
                         while True:
                             if self._delay:
-                                _sleep(retries=retry_count)
+                                sleep(retries=retry_count)
                             (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                             if not _need_retry:
                                 return _result
@@ -103,7 +108,7 @@ class Retry:
                     else:
                         for retry_count in range(self._max_retries):
                             if self._delay:
-                                _sleep(retries=retry_count)
+                                sleep(retries=retry_count)
                             (_error, _error_type, _error_super_type), _need_retry, _result = validator()
                             if not _need_retry:
                                 return _result
