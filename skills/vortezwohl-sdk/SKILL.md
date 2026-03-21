@@ -1,15 +1,15 @@
 ---
 name: vortezwohl-sdk
-description: Understand, extend, and integrate the vortezwohl Python utility package. Use when Codex needs to read or modify code under the vortezwohl package, explain its execution model, choose or compose its concurrency/retry/timeout/cache/string-similarity helpers, or port its patterns into other projects that depend on these primitives.
+description: Understand, extend, and integrate the public `vortezwohl` Python SDK published on PyPI. Use when Codex needs to inspect or modify the SDK source, explain its execution model, choose or compose its concurrency/retry/timeout/cache/string-similarity helpers, or port its patterns into other projects that depend on these primitives.
 ---
 
 # Vortezwohl SDK
 
 ## Overview
 
-Use this skill when working on the `vortezwohl` package itself or when another repository uses its primitives such as `ThreadPool`, `Retry`, `timeout`, `LRUCache`, `LevenshteinDistance`, `HttpClient`, or `sliding_window`.
+Use this skill when working on the public `vortezwohl` SDK from PyPI or when another repository uses its primitives such as `ThreadPool`, `Retry`, `timeout`, `LRUCache`, `LevenshteinDistance`, `HttpClient`, or `sliding_window`.
 
-Treat `vortezwohl` as a small sync utility toolkit, not a framework. It has no central runtime or CLI. Most behavior is exposed as decorators, helper classes, or small functions that are intended to be composed in application code.
+Treat `vortezwohl` as a small sync utility toolkit, not a framework. It is distributed as a public package on PyPI and can be consumed either as an installed dependency or by reading its source on GitHub. It has no central runtime or CLI. Most behavior is exposed as decorators, helper classes, or small functions that are intended to be composed in application code.
 
 ## Installation
 
@@ -102,16 +102,6 @@ After changes, verify at least:
 - When documenting or changing retries, distinguish between `attempts` and `retries`. In this package, `max_retries=n` usually means up to `n + 1` total attempts.
 - When changing logging, remember the root package configures loggers in `vortezwohl/__init__.py`.
 - When using `ThreadPool`, reason about whether the caller needs submission order or completion order. The current helpers favor completion order.
-
-## External Reference Projects
-
-Use these projects as integration examples for the SDK patterns:
-
-- Thread pool plus retry: `D:\project\novel_reimagine\novel_reimagine\agent\commentary_script\script_convertor.py`
-- Levenshtein correction for model output: `D:\project\Autono\autono\prompt\next_move_prompt.py`
-- Timeout-wrapped long pipeline: `D:\project\neo-translator\neo_translator\__main__.py`
-- LRU trace-id cache: `D:\project\any-llm-sdk\any_llm\llm.py`
-- Sliding-window NER fan-out: `D:\project\novel_localizer\novel_localizer\util\ner.py`
 
 ## References
 

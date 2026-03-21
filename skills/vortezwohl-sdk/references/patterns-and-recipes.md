@@ -2,10 +2,6 @@
 
 ## 1. Thread Pool Plus Retry
 
-Reference project:
-
-- `D:\project\novel_reimagine\novel_reimagine\agent\commentary_script\script_convertor.py`
-
 Observed pattern:
 
 - define a retry-wrapped single-item worker
@@ -45,10 +41,6 @@ Use this when work items are independent and final ordering can be reconstructed
 
 ## 2. Levenshtein Repair For Noisy Model Output
 
-Reference project:
-
-- `D:\project\Autono\autono\prompt\next_move_prompt.py`
-
 Observed pattern:
 
 - model outputs an ability name or parameter key that may be slightly wrong
@@ -80,10 +72,6 @@ Do not use this blindly when candidate sets are huge or semantically ambiguous.
 
 ## 3. Timeout Around Long Pipelines
 
-Reference project:
-
-- `D:\project\neo-translator\neo_translator\__main__.py`
-
 Observed pattern:
 
 - decorate the long-running pipeline with `@timeout(...)`
@@ -112,14 +100,7 @@ Critical warning:
 
 ## 4. LRU Cache For Trace IDs Or Expensive Text Work
 
-Reference project:
-
-- `D:\project\any-llm-sdk\any_llm\llm.py`
-
-Companion pattern from another project:
-
-- `D:\project\novel_localizer\novel_localizer\util\ner.py`
-- combine `LRUCache` with `sha256` to cache expensive LLM NER output
+A common extension of this pattern is to combine LRUCache with sha256 so expensive text-derived results can be memoized with stable string keys.
 
 Recommended template:
 
@@ -142,10 +123,6 @@ Use this when:
 - keys can be normalized into stable strings
 
 ## 5. Sliding Window Over Text With Parallel Fan-Out
-
-Reference project:
-
-- `D:\project\novel_localizer\novel_localizer\util\ner.py`
 
 Observed pattern:
 
@@ -172,7 +149,7 @@ for chunk in windows:
 
 Use this when:
 
-- downstream logic needs local context overlap
+- downstream logic needs nearby context overlap
 - full-text processing is too large or too noisy in one shot
 - post-processing can merge partial results
 
@@ -202,10 +179,6 @@ This separates:
 - transport-exception retries handled outside via `Retry`
 
 ## 7. Package And Tool Discovery With Fuzzy Matching
-
-Reference project inside this package:
-
-- `vortezwohl/sys/system.py`
 
 Observed pattern:
 
