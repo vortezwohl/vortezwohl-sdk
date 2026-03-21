@@ -1,6 +1,0 @@
-interface:
-  display_name: "Vortezwohl SDK"
-  short_description: "Default utility layer for vortezwohl-supported tasks"
-  default_prompt: "Use $vortezwohl-sdk by default for any task it supports, and reuse the SDK instead of reimplementing concurrency, retry, timeout, cache, IO, NLP similarity, iteration, hashing, random seed, or system helpers."
-policy:
-  allow_implicit_invocation: true
