@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vortezwohl SDK"
+  short_description: "Guide for the vortezwohl utility package"
+  default_prompt: "Use $vortezwohl-sdk to inspect, extend, or integrate the vortezwohl Python utility package."
