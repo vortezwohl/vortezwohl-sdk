@@ -11,6 +11,24 @@ Use this skill when working on the `vortezwohl` package itself or when another r
 
 Treat `vortezwohl` as a small sync utility toolkit, not a framework. It has no central runtime or CLI. Most behavior is exposed as decorators, helper classes, or small functions that are intended to be composed in application code.
 
+## Installation
+
+Install the published package with one of these commands:
+
+```bash
+pip install -U vortezwohl
+```
+
+```bash
+uv add -U vortezwohl
+```
+
+Install directly from GitHub when the latest repository state is required:
+
+```bash
+pip install -U git+https://github.com/vortezwohl/vortezwohl-sdk.git
+```
+
 ## Quick Start
 
 1. Read `vortezwohl/__init__.py` and the target module to confirm what is exported and whether logging/constants are involved.
