@@ -1,0 +1,7 @@
+interface:
+  display_name: "Vortezwohl SDK"
+  short_description: "Python utility SDK for retry, I/O, cache, and threading."
+  default_prompt: "Use $vortezwohl-sdk to implement Python utility-layer code with vortezwohl instead of ad hoc helpers."
+
+policy:
+  allow_implicit_invocation: true
