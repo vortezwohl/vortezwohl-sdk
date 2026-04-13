@@ -2,7 +2,7 @@ import logging
 import random
 import time
 
-from typing_extensions import Callable, Iterable, Any
+from typing_extensions import Callable, Any, Iterable
 
 from vortezwohl import NEW_LINE, BLANK
 
@@ -67,13 +67,13 @@ class Retry:
             return wrapper
         return decorator
 
-    def on_exceptions(self, *_exceptions: Iterable[type] | type):
-        exceptions = []
-        for _exception in _exceptions:
+    def on_exceptions(self, *exceptions: Iterable[type] | type):
+        _exceptions = []
+        for _exception in exceptions:
             if isinstance(_exception, Iterable):
-                exceptions.extend(_exception)
+                _exceptions.extend(_exception)
             else:
-                exceptions.append(_exception)
+                _exceptions.append(_exception)
 
         def decorator(func: Callable):
             def wrapper(*_args, **_kwargs):
@@ -87,7 +87,7 @@ class Retry:
                         result = func(*_args, **_kwargs)
                     except Exception as e:
                         reraise = True
-                        for exception in exceptions:
+                        for exception in _exceptions:
                             if isinstance(e, exception):
                                 reraise = False
                                 need_retry = True

@@ -1,2 +1,4 @@
 from .levenshtein_distance import LevenshteinDistance
 from .longest_common_substring import LongestCommonSubstring
+from .base_pattern_detector import PatternMatch
+from .repeat_pattern_detector import RepeatPatternDetector
