@@ -1,7 +1,13 @@
+import dataclasses
 from abc import ABC, abstractmethod
 
 
-PatternMatch = tuple[str, int, int, int]
+@dataclasses.dataclass(frozen=True, slots=True)
+class PatternMatch:
+    pattern: str
+    repeat: int
+    start: int
+    end: int
 
 
 class BasePatternDetector(ABC):

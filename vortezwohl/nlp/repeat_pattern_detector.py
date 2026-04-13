@@ -60,19 +60,17 @@ class RepeatPatternDetector(BasePatternDetector):
     def __is_better_match(candidate: PatternMatch, best: PatternMatch | None) -> bool:
         if best is None:
             return True
-        candidate_pattern, candidate_count, candidate_start, _ = candidate
-        best_pattern, best_count, best_start, _ = best
         candidate_key = (
-            candidate_count,
-            len(candidate_pattern) * candidate_count,
-            -len(candidate_pattern),
-            -candidate_start,
+            candidate.repeat,
+            len(candidate.pattern) * candidate.repeat,
+            -len(candidate.pattern),
+            -candidate.start
         )
         best_key = (
-            best_count,
-            len(best_pattern) * best_count,
-            -len(best_pattern),
-            -best_start,
+            best.repeat,
+            len(best.pattern) * best.repeat,
+            -len(best.pattern),
+            -best.start
         )
         return candidate_key > best_key
 
@@ -120,7 +118,12 @@ class RepeatPatternDetector(BasePatternDetector):
                     continue
                 pattern = text[start:start + pattern_len]
                 end = start + pattern_len * repeat_count
-                candidate = (pattern, repeat_count, start, end)
+                candidate = PatternMatch(
+                    pattern=pattern,
+                    repeat=repeat_count,
+                    start=start,
+                    end=end
+                )
                 if self.__is_better_match(candidate=candidate, best=best):
                     best = candidate
         return best
@@ -153,11 +156,15 @@ class RepeatPatternDetector(BasePatternDetector):
                 count += 1
                 pos += step
             matched_pattern = text[start:start + step]
-            candidate = (matched_pattern, count, start, start + count * step)
+            candidate = PatternMatch(
+                pattern=matched_pattern,
+                repeat=count,
+                start=start,
+                end=start + count * step
+            )
             if best is None:
                 best = candidate
                 continue
-            _, best_count, best_start, _ = best
-            if count > best_count or (count == best_count and start < best_start):
+            if count > best.repeat or (count == best.repeat and start < best.start):
                 best = candidate
         return best
