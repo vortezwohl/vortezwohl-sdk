@@ -15,7 +15,7 @@ class BasePatternDetector(ABC):
         self._ignore_case = ignore_case
 
     def _normalize(self, text: str) -> str:
-        return text.lower() if self._ignore_case else text
+        return text.casefold() if self._ignore_case else text
 
     def __call__(self, text: str) -> PatternMatch | None:
         return self.detect(text=text)

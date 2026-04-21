@@ -10,7 +10,7 @@ class LevenshteinDistance(BaseStringSimilarity):
     @override
     def __call__(self, s_1: str, s_2: str) -> int:
         if self._ignore_case:
-            s_1, s_2 = s_1.lower(), s_2.lower()
+            s_1, s_2 = s_1.casefold(), s_2.casefold()
         m, n = len(s_1), len(s_2)
         dp = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(m + 1):
